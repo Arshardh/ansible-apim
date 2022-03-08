@@ -52,21 +52,22 @@ type = "JKS"
 password = "{% if secure_vault_enabled|bool %}$secret{trust_store_password}{% else %}{{ trust_store_password }}{% endif %}"
 
 {% for environment in gateway_environments %}
-    [[apim.gateway.environment]]
-    name = "{{ environment.name }}"
-    type = "{{ environment.type }}"
-    display_in_api_console = true
-    description = "{{ environment.description }}"
-    show_as_token_endpoint_url = true
-    service_url = "{{ environment.service_url }}"
-    username= "${admin.username}"
-    password= "${admin.password}"
-    ws_endpoint = "{{ environment.ws_endpoint }}"
-    wss_endpoint = "{{ environment.wss_endpoint }}"
-    http_endpoint = "{{ environment.http_endpoint }}"
-    https_endpoint = "{{ environment.https_endpoint }}"
-    websub_event_receiver_http_endpoint = "{{environment.websub_event_receiver_http_endpoint}}"
-    websub_event_receiver_https_endpoint = "{{environment.websub_event_receiver_https_endpoint}}"
+[[apim.gateway.environment]]
+name = "{{ environment.name }}"
+type = "{{ environment.type }}"
+provider = "wso2"
+display_in_api_console = true
+description = "{{ environment.description }}"
+show_as_token_endpoint_url = true
+service_url = "{{ environment.service_url }}"
+username= "${admin.username}"
+password= "${admin.password}"
+ws_endpoint = "{{ environment.ws_endpoint }}"
+wss_endpoint = "{{ environment.wss_endpoint }}"
+http_endpoint = "{{ environment.http_endpoint }}"
+https_endpoint = "{{ environment.https_endpoint }}"
+websub_event_receiver_http_endpoint = "{{environment.websub_event_receiver_http_endpoint}}"
+websub_event_receiver_https_endpoint = "{{environment.websub_event_receiver_https_endpoint}}"
 {% endfor %}
 
 #[apim.sync_runtime_artifacts.gateway]
@@ -242,7 +243,7 @@ name = "org.wso2.is.notification.ApimOauthEventInterceptor"
 order = 1
 
 [event_listener.properties]
-notification_endpoint = "https://cp.apim.com:9453/internal/data/v1/notify"
+notification_endpoint = "https://cp.apim.com:9455/internal/data/v1/notify"
 username = "${admin.username}"
 password = "${admin.password}"
 'header.X-WSO2-KEY-MANAGER' = "default"
@@ -252,11 +253,11 @@ enable = true
 username = "$ref{super_admin.username}"
 password = "$ref{super_admin.password}"
 service_url = "https://cp.apim.com:9455/services/"
-event_listening_endpoints = ["tcp://cp.apim.com:5685"]
+event_listening_endpoints = ["tcp://cp.apim.com:5684"]
 
 [[apim.event_hub.publish.url_group]]
 urls = ["tcp://cp.wso2.com:9623"]
-auth_urls = ["ssl://cp.wso2.com:9623"]
+auth_urls = ["ssl://cp.wso2.com:9723"]
 
 {% if secure_vault_enabled|bool %}
 [secrets]

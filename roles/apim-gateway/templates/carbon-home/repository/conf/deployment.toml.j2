@@ -76,9 +76,9 @@ service_url = "{{ traffic_manager_host_url }}/services/"
 username = "$ref{super_admin.username}"
 password = "$ref{super_admin.password}"
 enable_unlimited_tier = true
-enable_header_based_throttling = false
-enable_jwt_claim_based_throttling = false
-enable_query_param_based_throttling = false
+enable_header_based_throttling = true
+enable_jwt_claim_based_throttling = true
+enable_query_param_based_throttling = true
 throttle_decision_endpoints = [{% for endpoint in throttle_decision_endpoints %}"{{ endpoint }}"{%- if not loop.last -%},{% endif %}{% endfor %}]
 {% for url_group in throttling_url_group %}
 [[apim.throttling.url_group]]
@@ -132,3 +132,44 @@ internal_key_store_password = "[{{ internal_key_store_password }}]"
 tls_key_store_key_password = "[{{ tls_key_store_key_password }}]"
 tls_key_store_password = "[{{ tls_key_store_password }}]"
 {% endif %}
+
+[apim.event_hub]
+enable = true
+username = "$ref{super_admin.username}"
+password = "$ref{super_admin.password}"
+service_url = "https://cp.apim.com:9455/services/"
+event_listening_endpoints = ["tcp://cp.apim.com:5684"]
+
+# Event Listener configurations
+[[event_listener]]
+id = "token_revocation"
+type = "org.wso2.carbon.identity.core.handler.AbstractIdentityHandler"
+name = "org.wso2.is.notification.ApimOauthEventInterceptor"
+order = 1
+
+[event_listener.properties]
+notification_endpoint = "https://cp.apim.com:9455/internal/data/v1/notify"
+username = "${admin.username}"
+password = "${admin.password}"
+'header.X-WSO2-KEY-MANAGER' = "default"
+
+#[[apim.gateway.environment]]
+#name = "apim-gw-dev"
+#display_name = "AWS APIM-GW-DEV FRANKFURT"
+#type = "hybrid"
+#display_in_api_console = true
+#description = "This is a demo environment in hybrid mode"
+#provider = "solace"
+#service_url = "http://35.180.255.69:5000/v1"
+#username = "wso2dev"
+#password = "UaM_4mvrEAKTigxW6tJVQ84M"
+
+# ws_endpoint = "ws://mr1i5g7tif6z9h.messaging.solace.cloud:8000"
+# wss_endpoint = "wss://mr1i5g7tif6z9h.messaging.solace.cloud:8443"
+# http_endpoint = "http://mr1i5g7tif6z9h.messaging.solace.cloud:9000"
+# https_endpoint = "https://mr1i5g7tif6z9h.messaging.solace.cloud:9443"
+# show_as_token_endpoint_url = false
+
+# [apim.gateway.environment.properties]
+# Organization = "wso2dev"
+# DevAccountName = "developer@wso2dev.com"
